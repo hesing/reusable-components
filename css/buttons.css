@@ -1,0 +1,22 @@
+.btn-inverse {
+    background-color: #fff;
+    border-color: #ccc;
+    color: #333;
+}
+
+.btn-inverse:hover, .btn-inverse:focus, .btn-inverse:active, .btn-inverse.active, .btn-inverse.focus, .btn-inverse:active, .btn-inverse:focus, .btn-inverse:hover, .open > .dropdown-toggle.btn-inverse{
+    border-color: #adadad;
+    color: #333;
+}
+
+.btn-pink, .btn-pink:hover, .btn-pink:focus, .btn-pink:active {
+    background-color: #f13c6e;
+    border: 1px solid #f13c6e;
+    color: #ffffff;
+}
+
+.btn-secondary, .btn-secondary:hover, .btn-secondary:focus, .btn-secondary:active {
+    background-color: #14082d;
+    border: 1px solid #14082d;
+    color: #ffffff;
+}
