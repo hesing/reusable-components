@@ -1,11 +1,5 @@
-## Reusable html, css, js components
+# Modular App
 
-It's just awesome!, Flat UI, reusable bootstrap components.  
+## References
 
-## Creator
-
-Creator of http://uxm.herokuapp.com/
-
-* https://github.com/hs105133
-* https://github.com/hs105133/modernapp-template
-* https://github.com/hemantajax
+[HTML & CSS style guide](http://codeguide.co/)
