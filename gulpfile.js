@@ -11,6 +11,7 @@ var fs = require("fs"),
 	sourcemaps = require('gulp-sourcemaps'),
     watch = require('gulp-watch'),
     notify = require("gulp-notify"),
+    del = require('del'),
     pkg = require('./package.json');
 
 process.env.NODE_ENV = 'development';
@@ -22,7 +23,7 @@ var
 	dest = 'dist/',
 	html = {
 		in: source + 'html/**/*.html',
-		watch: [source + '*.html', source + 'views/**/*'],
+		watch: [source + 'html/**/*'],
 		out: dest+'screens/',
 		context: {
 			devBuild: devBuild,
@@ -104,7 +105,6 @@ gulp.task('sass', function () {
 
 gulp.task('js', function() {
 	if (devBuild) {
-		console.log(js.in);
 		return gulp.src(js.in)
 			.pipe(newer(js.out))
 			.pipe(jshint())
@@ -141,7 +141,25 @@ gulp.task('copy', function(){
   }
 });
 
-gulp.task('default', ['html', 'sass', 'js', 'copy'], function () {
+// clean the build folder
+gulp.task('clean', function() {
+	del([
+		dest + '*'
+	]);
+});
+
+gulp.task('express', function() {
+	var express = require('express');
+	var app = express();
+	app.set('port', (process.env.PORT || 5000))
+	app.use(express.static("dist/"));
+
+	app.listen(app.get('port'), function() {
+	  console.log("Node app is running at localhost:" + app.get('port'))
+	});
+});
+
+gulp.task('default', ['express', 'html', 'sass', 'js', 'copy'], function () {
 	// html changes
 	gulp.watch(html.watch, ['html']);
 
