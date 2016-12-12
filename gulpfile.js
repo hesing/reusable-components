@@ -1,171 +1,60 @@
-var fs = require("fs"),
-	gulp = require('gulp'),
-	newer = require('gulp-newer'),
-	jshint = require('gulp-jshint'),
-	concat = require('gulp-concat'),
-	uglify = require('gulp-uglify'),
-	size = require('gulp-size'),
-	preprocess = require('gulp-preprocess'),
-	sass = require('gulp-sass'),
-	htmlclean = require('gulp-htmlclean'),
-	sourcemaps = require('gulp-sourcemaps'),
-    watch = require('gulp-watch'),
-    notify = require("gulp-notify"),
-    del = require('del'),
-    pkg = require('./package.json');
-
-process.env.NODE_ENV = 'development';
-
-var
-	devBuild = ((process.env.NODE_ENV || 'development').trim().toLowerCase() !== 'production'),
-
-	source = 'src/',
-	dest = 'dist/',
-	html = {
-		in: source + 'html/**/*.html',
-		watch: [source + 'html/**/*'],
-		out: dest+'screens/',
-		context: {
-			devBuild: devBuild,
-			author: pkg.author,
-			version: pkg.version
-		}
-	},
-	css = {
-	    in: source + 'sass/**/*.scss',
-	    watch: [source + 'sass/**/*'],
-	    out: dest + '/styles',
-	    sassOpts: {
-	        outputStyle: 'expanded', // compressed
-	        imagePath: '../images',
-	        precision: 3,
-	        errLogToConsole: true,
-	        onError: function (err) {
-	            return notify().write(err);
-	        }
-	    }
-	},
-
-	js = {
-		in: source + 'js/**/*',
-		out: dest + 'js/',
-		filename: 'main.min.js',
-		vendor: source + 'vendor/'
-	};
-
-    function getFilesList() {
-        var jsFiles = [],
-        	indexContents,
-            scriptTagsPattern,
-            match;
-
-        // if (!grunt.file.exists(indexPath)) {
-        //     grunt.log.warn('Index file "' + indexPath + '" not found.');
-        //     return false;
-        // }
-
-		indexContents = fs.readFileSync(source+'html/templates/_scripts.html');
-        scriptTagsPattern = /<script.+?src="(.+?)".*?><\/script>/gm;
-        match = scriptTagsPattern.exec(indexContents);
-        while (match) {
-            // if (!(/livereload-setup\.js/.test(match[1]))) {
-            jsFiles.push(source + match[1]);
-            // }
-            match = scriptTagsPattern.exec(indexContents);
-        } 
-        jsFiles.pop(); // remove production script `main.min.js` 
-        return  jsFiles;
-    }
-// build HTML files
-gulp.task('html', function() {
-	var page = gulp.src(html.in).pipe(preprocess({ context: html.context }));
-	if (!devBuild) {
-		page = page
-			.pipe(size({ title: 'HTML in' }))
-			.pipe(htmlclean())
-			.pipe(size({ title: 'HTML out' }));
-	}
-	return page.pipe(gulp.dest(html.out));
-});
-
-// compile Sass
-gulp.task('sass', function () {
-    return gulp.src(css.in)
-		.pipe(sourcemaps.init())
-		.pipe(sass(css.sassOpts))
-        .on('error', notify.onError(function (error) {
-            return 'An error occurred while compiling sass.\nLook in the console for details.\n' + error;
-        }))
-		.pipe(sourcemaps.write())
-		.pipe(gulp.dest(css.out))
-        .pipe(notify({
-            message: "Compilation Successful"
-        }));
-});
-
-gulp.task('js', function() {
-	if (devBuild) {
-		return gulp.src(js.in)
-			.pipe(newer(js.out))
-			.pipe(jshint())
-			.pipe(jshint.reporter('default'))
-			.pipe(jshint.reporter('fail'))
-			.pipe(gulp.dest(js.out));
-	}
-	else {
-		// del([
-		// 	dest + 'js/*'
-		// ]);
-		return gulp.src(getFilesList())
-			//.pipe(deporder())
-			.pipe(concat(js.filename))
-			.pipe(size({ title: 'JS in '}))
-			// .pipe(stripdebug())
-			.pipe(uglify())
-			.pipe(size({ title: 'JS out '}))
-			.pipe(gulp.dest(js.out));
-	}
-});
-
-gulp.task('copy', function(){
-  // the base option sets the relative root for the set of files,
-  // preserving the folder structure
-  if(devBuild){
-	  gulp.src([
-      source + "images/**/*.*",
-      source + "fonts/**/*.*",
-      source + "vendor/**/*.*",
-      source + "views/**/*.*"
-    ], { base: source })
-	  .pipe(gulp.dest(dest)); 	
-  }
-});
+var gulp = require('gulp');
+var config = require('./gulp-tasks/config');
+var browsersync = require('browser-sync');
+var del = require('del');
 
 // clean the build folder
-gulp.task('clean', function() {
-	del([
-		dest + '*'
-	]);
-});
+require('./gulp-tasks/clean')(gulp);
 
-gulp.task('express', function() {
-	var express = require('express');
-	var app = express();
-	app.set('port', (process.env.PORT || 5000))
-	app.use(express.static("dist/"));
+// build HTML files
+require('./gulp-tasks/html')(gulp);
 
-	app.listen(app.get('port'), function() {
-	  console.log("Node app is running at localhost:" + app.get('port'))
-	});
-});
+// manage image optimization
+require('./gulp-tasks/images')(gulp);
 
-gulp.task('default', ['express', 'html', 'sass', 'js', 'copy'], function () {
-	// html changes
-	gulp.watch(html.watch, ['html']);
+// compass
+// require('./gulp-tasks/compass')(gulp);
 
-	// sass changes
-    gulp.watch([css.watch], ['sass']);
+// compile Sass
+require('./gulp-tasks/sass')(gulp);
+
+// components Sass
+require('./gulp-tasks/componentsSass')(gulp);
+
+// scripts optimization
+require('./gulp-tasks/scripts')(gulp);
+
+// componentsJS optimization
+require('./gulp-tasks/componentsJS')(gulp);
+
+// copy static files ( fonts, views, favicon.ico etc )
+require('./gulp-tasks/copy')(gulp);
+
+// browser sync
+require('./gulp-tasks/browsersync')(gulp);
+
+// cleaning ( templates) for production build
+require('./gulp-tasks/cleanforprod')(gulp);
+
+
+// default task
+gulp.task('default', ['html', 'images', 'sass', 'scripts', 'browsersync', 'copy'], function() {
+    // html changes
+    gulp.watch(config.html.watch, ['html', browsersync.reload]);
+
+    // sass changes
+    gulp.watch(config.css.watch, ['sass']);
 
     // javascript changes
-	gulp.watch(js.in, ['js']);
+    gulp.watch(config.js.in, ['scripts', browsersync.reload]);
+
+    if (!config.devBuild) {
+        del([
+            config.dest + 'vendor/'
+        ], { force: true });
+    }
+
+    del([
+        config.dest + 'templates/'
+    ], { force: true });
 });

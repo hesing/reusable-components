@@ -1,0 +1,56 @@
+    <aside class="left-panel" style="overflow: hidden;" tabindex="5000" ng-class="{collapsed: sideMenuCollapse}">
+        <div class="sidebar-header">
+            <div class="sidebar-title">
+                <h1>Library Maintenance</h1>
+            </div>
+            <div class="float-sm-right toggleSection">
+                <div class="logoutSection">
+                    <i class="mdl2-more mdl2-ellipsis" ng-click="toggleLogout=!toggleLogout"></i>
+                    <div class="popover popover-bottom" ng-show="toggleLogout">
+                        <div class="popover-content">
+                            <a href="/logout" class="btn btn-link">Logout</a>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <button class="btn btn-link iconbarBtn" ng-click="sideMenuCollapse=!sideMenuCollapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- / brand -->
+        <!-- Navbar Start -->
+        <nav class="navigation">
+            <ul class="list-unstyled">
+                <li ui-sref-active="active">
+                    <a ui-sref="home"><i class="fa fa-file-o" aria-hidden="true"></i> <span class="nav-label">Structure and documents</span></a>
+                </li>
+                <li ui-sref-active="active">
+                    <a ui-sref="fsa">
+                        <i class="fa fa-align-left fsa" aria-hidden="true">
+                            <strong class="ico-fsa">FSA</strong>
+                        </i>
+                        <span class="nav-label">FSA's</span>
+                    </a>
+                </li>
+                <li ui-sref-active="active">
+                    <a ui-sref="app.two"><i class="fa iconbig fa-cogs" aria-hidden="true"></i> <span class="nav-label">Workspace settings</span></a>
+                </li>
+                <li ui-sref-active="active">
+                    <a ui-sref="inlineEditingGrid"><i class="fa iconbig fa-cogs" aria-hidden="true"></i> <span class="nav-label">Inline Editing Grid</span></a>
+                </li>
+                <li ui-sref-active="active">
+                    <a ui-sref="app.three">
+                        <span class="mdl2-important sidebar-notify" aria-hidden="true">
+                            <span>12</span>
+                        </span>
+                        <span class="nav-label">Notification</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>

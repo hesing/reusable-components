@@ -1,0 +1,14 @@
+﻿@import "../theme/variables";
+
+.fsa-header{
+	padding: 20px;
+	background-color: #F4F4F4;
+}
+
+.fsa-btn-group button{
+    color: #8891a0;
+    font-size: $font-size-h1;
+    padding: 4px 8px;
+    background: transparent;
+    border: none;
+}

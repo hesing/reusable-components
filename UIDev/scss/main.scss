@@ -1,0 +1,26 @@
+@import "theme/theme";
+@import 'bootstrap/scss/bootstrap';
+
+@import "components/callout";
+@import "components/sidebar";
+@import "theme/bootstrap-override";
+
+@import "components/loader";
+@import "components/animation";
+@import "../components/common/alert/alert";
+// @import "../components/common/commoncss/modal";
+// @import "components/app";
+
+body{
+	padding-top: 70px;
+}
+
+@media (min-width: 48em) { 
+	.sidebar.toggled + .content{
+		width: calc(100% - 280px);
+	}
+}
+
+
+
+
