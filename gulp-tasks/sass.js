@@ -95,7 +95,7 @@ module.exports = function(gulp) {
                     ]
 
                 }))
-                .pipe(pleeease(config.css.pleeeaseOpts))
+                // .pipe(pleeease(config.css.pleeeaseOpts))
                 .pipe(rename('main.min.css'))
 
                 .pipe(sass({

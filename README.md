@@ -1,5 +1,11 @@
 # Gulp build with Angular JS
 
+## Install 
+
+```
+npm i browser-sync del gulp-autoprefixer gulp-concat gulp-htmlclean gulp-imagemin gulp-jshint gulp-newer gulp-ng-annotate gulp-notify gulp-preprocess gulp-rename gulp-sass gulp-size gulp-sourcemaps gulp-strip-debug gulp-uglify gulp-uncss jshint -D
+```
+
 Modular gulp build each task in it's own fles, Modular Angular App
 
 - clean build directory
